@@ -1,0 +1,22 @@
+[project]
+name = "AntennaPNF"
+version = "0.1.0"
+description = "Planar Near-Field Antenna Measurement Functions"
+authors = [
+    {name = "Hüseyin YİĞİT", email = "yigit.hsyn@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.13"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.2",
+]
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
