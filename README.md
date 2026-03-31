@@ -148,6 +148,46 @@ L = pnf.scan_length(a=0.3, d=0.15, theta=45.0)
 
 ---
 
+### `sampling_parameters_for_length(frequency, L)`
+
+Computes the sampling parameters (start position, stop position, count, and spacing) for a planar near-field scan based on the desired minimum scan length.
+
+| Parameter   | Type    | Unit | Description                       |
+| ----------- | ------- | ---- | --------------------------------- |
+| `frequency` | `float` | Hz   | Frequency of interest             |
+| `L`         | `float` | m    | Desired minimum scan length       |
+
+**Returns:** `tuple` — (Lm, Lp, N, Delta) where Lm is sampling start position in meters [m], Lp is sampling stop position in meters [m], N is sampling count, Delta is spatial sampling length in millimeters [mm]
+
+> **Note:** The scan region is assumed to be centered on the AUT. The sampling spacing is floored to the nearest millimeter, and the scan length is adjusted to ensure proper sampling.
+
+```python
+Lm, Lp, N, Delta = pnf.sampling_parameters_for_length(10e9, 1.2)
+```
+
+---
+
+### `sampling_parameters_for_angle(frequency, a, d, theta)`
+
+Computes the sampling parameters (start position, stop position, count, and spacing) for a planar near-field scan to achieve a desired angle-of-view.
+
+| Parameter   | Type    | Unit | Description                               |
+| ----------- | ------- | ---- | ----------------------------------------- |
+| `frequency` | `float` | Hz   | Frequency of interest                     |
+| `a`         | `float` | m    | Antenna cross-section length              |
+| `d`         | `float` | m    | Separation distance between AUT and probe |
+| `theta`     | `float` | deg  | Desired pattern view angle (one side)     |
+
+**Returns:** `tuple` — (Lm, Lp, N, Delta) where Lm is sampling start position in meters [m], Lp is sampling stop position in meters [m], N is sampling count, Delta is spatial sampling length in millimeters [mm]
+
+> **Note:** The scan region is assumed to be centered on the AUT. This function first computes the required scan length using `scan_length`, then determines the sampling parameters.
+
+```python
+Lm, Lp, N, Delta = pnf.sampling_parameters_for_angle(10e9, 0.3, 0.15, 45.0)
+```
+
+---
+
 ## Usage Example
 
 ```python
@@ -171,6 +211,20 @@ print(f"Required scan length    : {L:.4f} m")
 # Achieved angle-of-view
 theta = pnf.angle_of_view(a=antenna_size, d=d, L=L)
 print(f"Angle of view           : {theta:.2f} deg")
+
+# Sampling parameters for a desired scan length
+Lm, Lp, N, Delta = pnf.sampling_parameters_for_length(9.5e9, 8.730)
+print(f"Sampling start position : {Lm:.3f} m")
+print(f"Sampling stop position  : {Lp:.3f} m")
+print(f"Sampling count          : {N}")
+print(f"Sampling spacing        : {Delta} mm")
+
+# Sampling parameters for a desired angle-of-view
+Lm, Lp, N, Delta = pnf.sampling_parameters_for_angle(9.5e9, 0.5, 0.15, 60.0)
+print(f"Sampling start position : {Lm:.3f} m")
+print(f"Sampling stop position  : {Lp:.3f} m")
+print(f"Sampling count          : {N}")
+print(f"Sampling spacing        : {Delta} mm")
 ```
 
 ---
