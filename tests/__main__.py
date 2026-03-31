@@ -56,3 +56,33 @@ def test_scan_length():
     print(f"- Scan length (d={a}m, d={d}m, theta={theta}°) is {pnf.scan_length(a,d,theta):.3f}m")
 
 
+def test_sampling_parameters_for_length():
+    print()
+
+    f = 9.5E9
+    L = 8.730
+    result = (-4.365, 4.365, 583, 15)
+    assert pnf.sampling_parameters_for_length(f,L),3 == pytest.approx(result)
+    print(f"- Sampling parameters (f={f/1E6}MHz, L={L}m) is {pnf.sampling_parameters_for_length(f,L)}")
+
+def test_sampling_parameters_for_angle():
+    print()
+
+    f = 9.5E9
+    a = 1.0
+    d = 0.15
+    theta = 60
+    result = (-0.765, 0.765, 103, 15)
+    assert pnf.sampling_parameters_for_angle(f,a,d,theta),3 == pytest.approx(result)
+    print(f"- Sampling parameters (f={f/1E6}MHz, a={a}m, d={d}m, theta={theta}°) is {pnf.sampling_parameters_for_angle(f,a,d,theta)}")
+
+    f = 9.5E9
+    a = 0.5
+    d = 0.15
+    theta = 60
+    result = ((-0.51, 0.51, 69, 15))
+    assert pnf.sampling_parameters_for_angle(f,a,d,theta),3 == pytest.approx(result)
+    print(f"- Sampling parameters (f={f/1E6}MHz, a={a}m, d={d}m, theta={theta}°) is {pnf.sampling_parameters_for_angle(f,a,d,theta)}")
+
+
+

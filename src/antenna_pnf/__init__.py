@@ -1,4 +1,4 @@
-from math import atan, degrees, radians, tan
+from math import atan, degrees, radians, tan, floor, ceil
 
 from ._utility import frequency_to_wavelength
 
@@ -169,3 +169,82 @@ def scan_length(a: float, d: float, theta: float) -> float:
         L = 2d \cdot \tan\theta + a
     """
     return 2 * d * tan(radians(theta)) + a
+
+
+def sampling_parameters_for_length(frequency: float, L: float) -> tuple:
+    r""" Planar near-field antenna measurement sampling count according to frequency and desired minimum length
+    
+    Parameters
+    ----------
+    frequency : float
+                frequency of interest in Hertz [Hz]
+    L         : float
+                desired minimum scan length [m]
+
+    Returns
+    -------
+    Lm    : float
+            sampling start position [m]
+    Lp    : float
+            sampling stop position [m] (equals to negative of Lp)
+    N     : float
+            samplng count
+    Delta : float
+            spatial samplng length [mm]
+
+    Notes
+    -----
+    Calculation assumes a scanning region centered on the AUT.  
+
+    Formula
+    -------
+    .. math::
+    """
+    
+    d_mm = floor(sampling_spacing(frequency)*1E3)
+    L_mm = ceil(L*1E3)
+    L_mm_half = L_mm/2 if L_mm%2 ==0 else (L_mm+1)/2
+    if L_mm_half%d_mm > 0:
+        L_mm_half = L_mm_half + (d_mm-L_mm_half%d_mm)
+    
+    N  = 2*(L_mm_half/d_mm)+1
+    Lm = -L_mm_half/1E3
+    Lp = +L_mm_half/1E3
+    
+    return ( Lm, Lp, int(N), int(d_mm) )
+
+def sampling_parameters_for_angle(frequency: float, a: float, d: float, theta: float) -> tuple:
+    r""" Planar near-field antenna measurement sampling count according to frequency and angle-of-view
+
+    Parameters
+    ----------
+    frequency : float
+                frequency of interest in Hertz [Hz]
+    a         : float
+                antenna cross-section length [m]
+    d         : float
+                separation distance between antenna and probe [m]
+    theta     : float
+                desired pattern view angle along one side [deg]
+
+    Returns
+    -------
+    Lm    : float
+            sampling start position [m]
+    Lp    : float
+            sampling stop position [m] (equals to negative of Lp)
+    N     : float
+            samplng count
+    Delta : float
+            spatial samplng length [mm]
+
+    Notes
+    -----
+    Calculation assumes a scanning region centered on the AUT.  
+
+    Formula
+    -------
+    .. math::
+    """
+    L = scan_length(a, d, theta)
+    return sampling_parameters_for_length(frequency, L)
